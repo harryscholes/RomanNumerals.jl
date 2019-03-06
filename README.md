@@ -7,3 +7,37 @@
 [![Coveralls](https://coveralls.io/repos/github/harryscholes/RomanNumerals.jl/badge.svg?branch=master)](https://coveralls.io/github/harryscholes/RomanNumerals.jl?branch=master)
 
 Julia package for Roman numerals.
+
+# Installation
+
+```julia
+] add https://github.com/harryscholes/RomanNumerals.jl
+```
+
+# Examples
+
+```julia
+julia> using RomanNumerals
+
+julia> RomanNumeral(1)
+I
+
+julia> RomanNumeral(5)
+V
+
+julia> rn"MMXIX"
+MMXIX
+
+julia> I + I
+II
+
+julia> V - I
+IV
+
+julia> 3X - 2I
+XXVIII
+
+julia> M ÷ X
+C
+
+```

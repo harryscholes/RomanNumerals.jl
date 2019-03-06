@@ -34,12 +34,6 @@ MMXIX
 
 ```
 
-```@meta
-DocTestSetup = quote
-    using RomanNumerals
-end
-```
-
 # String literal
 
 ```jldoctest
@@ -74,10 +68,6 @@ julia> Int(rn"MMXIX")
 julia> string(rn"MMXIX")
 "MMXIX"
 
-```
-
-```@meta
-DocTestSetup = nothing
 ```
 """
 struct RomanNumeral{T<:Integer}
@@ -176,6 +166,11 @@ Base.show(io::IO, rn::RomanNumeral) = print(io, convert(String, rn))
 
 # String literal
 
+"""
+    rn"IVXLCDM"
+
+RomanNumeral string literal.
+"""
 macro rn_str(rn)
     RomanNumeral(rn)
 end

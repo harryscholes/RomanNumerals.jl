@@ -89,10 +89,7 @@ struct RomanNumeral{T<:Integer}
     end
 end
 
-function RomanNumeral(rn::AbstractString)
-    # isvalidromannumeral(rn)
-    convert(RomanNumeral, rn)
-end
+RomanNumeral(rn::AbstractString) = convert(RomanNumeral, rn)
 
 # I, V, X, L, C, D and M consts
 
@@ -139,7 +136,7 @@ const INT_NUMERAL = Dict(
 const NUMERAL_INT = Dict(zip(values(INT_NUMERAL), keys(INT_NUMERAL)))
 
 const ROMAN_NUMERAL_REGEX =
-    r"(M*(CM|CD|DC{0,4}|C{0,4})(XC|XL|LX{0,4}|X{0,9})(IX|IV|VI{0,4}|I{0,4}))"x
+    r"(M*(CM|CD|DC{0,4}|C{0,9})(XC|XL|LX{0,4}|X{0,9})(IX|IV|VI{0,4}|I{0,9}))"x
 
 function isvalidromannumeral(rn::AbstractString)
     m = match(ROMAN_NUMERAL_REGEX, rn)
@@ -176,7 +173,6 @@ Base.convert(::Type{RomanNumeral}, rn::String) = parse(RomanNumeral, rn)
 Base.convert(::Type{T}, rn::RomanNumeral) where T<:Integer = T(rn.num)
 Base.Int(rn::RomanNumeral) = convert(Int, rn)
 Base.show(io::IO, rn::RomanNumeral) = print(io, convert(String, rn))
-Base.length(rn::RomanNumeral) = length(string(rn))
 
 # String literal
 

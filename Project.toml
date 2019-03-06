@@ -1,7 +1,6 @@
 name = "RomanNumerals"
 uuid = "37834d88-8936-577c-80c9-1066ecf66832"
 authors = ["harryscholes <harryscholes@gmail.com>"]
-version = "0.1.0"
 
 [compat]
 julia = "1.0"

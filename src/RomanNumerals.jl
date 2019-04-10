@@ -189,7 +189,7 @@ Random.rand(rng::AbstractRNG, ::Random.SamplerType{RomanNumeral{T}}) where T<:In
     RomanNumeral(T(rand(rng, 1:min(typemax(T), 5000))))
 
 Random.rand(rng::AbstractRNG, ::Random.SamplerType{RomanNumeral}) =
-    RomanNumeral(rand(rng, 1:min(typemax(T), 5000))))
+    RomanNumeral(rand(rng, 1:min(typemax(T), 5000)))
 
 # String literal
 

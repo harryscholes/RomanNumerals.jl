@@ -96,6 +96,8 @@ end
         @test X + X == RomanNumeral(20)
         @test D - 2C == RomanNumeral(300)
         @test M + M + M + M == RomanNumeral(4000)
+        @test V - 2 == RomanNumeral(3)
+        @test 5 - rn"II" == RomanNumeral(3)
     end
 end
 

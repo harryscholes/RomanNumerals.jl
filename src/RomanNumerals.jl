@@ -5,7 +5,12 @@ export
     @rn_str,
     I, V, X, L, C, D, M
 
-import Base: +, -, *, ÷
+import Base:
+    +, -, *, ÷,
+    Int8, Int16, Int32, Int64, Int128, BigInt,
+    UInt8, UInt16, UInt32, UInt64, UInt128
+
+using Random
 
 """
     RomanNumeral(num)
@@ -20,17 +25,20 @@ the `@rn_str` string macro.
 ```jldoctest
 julia> using RomanNumerals
 
-julia> RomanNumeral(1)
+julia> foreach(i->println(RomanNumeral(i)), 1:5)
 I
-
-julia> RomanNumeral(5)
+II
+III
+IV
 V
 
-julia> RomanNumeral(9)
-IX
-
-julia> RomanNumeral(2019)
-MMXIX
+julia> rand(RomanNumeral, 5)
+5-element Array{RomanNumeral,1}:
+ LXXI
+ CXX
+ XCVIII
+ XLIX
+ VIII
 
 ```
 
@@ -62,12 +70,17 @@ C
 # Conversion
 
 ```jldoctest
-julia> Int(rn"MMXIX")
+julia> RomanNumeral(2019)
+MMXIX
+
+julia> Int16(rn"MMXIX")
 2019
 
 julia> string(rn"MMXIX")
 "MMXIX"
 
+julia> rn"I" == RomanNumeral("I") == RomanNumeral('I') == RomanNumeral(1)
+true
 ```
 """
 struct RomanNumeral{T<:Integer}
@@ -80,6 +93,7 @@ struct RomanNumeral{T<:Integer}
 end
 
 RomanNumeral(rn::AbstractString) = convert(RomanNumeral, rn)
+RomanNumeral(rn::AbstractChar) = convert(RomanNumeral, string(rn))
 
 # I, V, X, L, C, D and M consts
 
@@ -161,8 +175,17 @@ end
 Base.convert(::Type{String}, rn::RomanNumeral) = parse(String, rn)
 Base.convert(::Type{RomanNumeral}, rn::String) = parse(RomanNumeral, rn)
 Base.convert(::Type{T}, rn::RomanNumeral) where T<:Integer = T(rn.num)
-Base.Int(rn::RomanNumeral) = convert(Int, rn)
+
+for T = [:Int8, :Int16, :Int32, :Int64, :Int128, :BigInt,
+         :UInt8, :UInt16, :UInt32, :UInt64, :UInt128]
+    @eval $T(rn::RomanNumeral) = convert($T, rn)
+end
+
 Base.show(io::IO, rn::RomanNumeral) = print(io, convert(String, rn))
+
+function Random.rand(rng::AbstractRNG, ::Random.SamplerType{RomanNumeral})
+    RomanNumeral(Int(abs(rand(rng, Int8))))
+end
 
 # String literal
 

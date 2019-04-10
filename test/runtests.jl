@@ -104,11 +104,10 @@ end
 @testset "Random" begin
     @test rand(MT(1), RomanNumeral) == rn"MCXCIX"
     @test rand(MT(1), RomanNumeral, 3) == RomanNumeral.(["MCXCIX", "MCLV", "CCCLX"])
-    @test rand(MT(2), RomanNumeral, 3) == RomanNumeral.(["DCCCXCV", "DCCXXXVI",
-                                                         "MDCCXXXVIII"])
+    @test rand(MT(2), RomanNumeral, 3) ==
+        RomanNumeral.(["DCCCXCV", "DCCXXXVI", "MDCCXXXVIII"])
     @test rand(RomanNumeral) isa RomanNumeral{Int}
-    @test rand(RomanNumeral{Int8}) isa RomanNumeral{Int8}
-    @test rand(RomanNumeral{Int16}) isa RomanNumeral{Int16}
-    @test rand(RomanNumeral{Int32}) isa RomanNumeral{Int32}
-    @test rand(RomanNumeral{Int128}) isa RomanNumeral{Int128}
+    for T = [Int8, Int16, Int32, Int64, Int128]
+        @test rand(RomanNumeral{T}) isa RomanNumeral{T}
+    end
 end

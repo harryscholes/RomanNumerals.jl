@@ -13,7 +13,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "RomanNumerals.RomanNumeral",
     "category": "type",
-    "text": "RomanNumeral(num)\n\nA type that represents a Roman numeral.\n\nRomanNumeral objects can be created using Integer or AbstractString objects, or using the @rn_str string macro.\n\nExamples\n\njulia> using RomanNumerals\n\njulia> RomanNumeral(1)\nI\n\njulia> RomanNumeral(5)\nV\n\njulia> RomanNumeral(9)\nIX\n\njulia> RomanNumeral(2019)\nMMXIX\n\n\nString literal\n\njulia> rn\"MMXIX\"\nMMXIX\n\n\nArithmetic\n\njulia> I + I\nII\n\njulia> V - I\nIV\n\njulia> 3X - 2I\nXXVIII\n\njulia> M ÷ X\nC\n\n\nConversion\n\njulia> Int(rn\"MMXIX\")\n2019\n\njulia> string(rn\"MMXIX\")\n\"MMXIX\"\n\n\n\n\n\n\n"
+    "text": "RomanNumeral(num)\n\nA type that represents a Roman numeral.\n\nRomanNumeral objects can be created using Integer or AbstractString objects, or using the @rn_str string macro.\n\nExamples\n\njulia> using RomanNumerals\n\njulia> foreach(i->println(RomanNumeral(i)), 1:5)\nI\nII\nIII\nIV\nV\n\njulia> rand(RomanNumeral, 5)\n5-element Array{RomanNumeral,1}:\n LXXI\n CXX\n XCVIII\n XLIX\n VIII\n\n\nString literal\n\njulia> rn\"MMXIX\"\nMMXIX\n\n\nArithmetic\n\njulia> I + I\nII\n\njulia> V - I\nIV\n\njulia> 3X - 2I\nXXVIII\n\njulia> M ÷ X\nC\n\n\nConversion\n\njulia> RomanNumeral(2019)\nMMXIX\n\njulia> Int16(rn\"MMXIX\")\n2019\n\njulia> string(rn\"MMXIX\")\n\"MMXIX\"\n\njulia> rn\"I\" == RomanNumeral(\"I\") == RomanNumeral(\'I\') == RomanNumeral(1)\ntrue\n\n\n\n\n\n"
 },
 
 {

@@ -25,17 +25,20 @@ the `@rn_str` string macro.
 ```jldoctest
 julia> using RomanNumerals
 
-julia> RomanNumeral(1)
+julia> foreach(i->println(RomanNumeral(i)), 1:5)
 I
-
-julia> RomanNumeral(5)
+II
+III
+IV
 V
 
-julia> RomanNumeral(9)
-IX
-
-julia> RomanNumeral(2019)
-MMXIX
+julia> rand(RomanNumeral, 5)
+5-element Array{RomanNumeral,1}:
+ LXXI
+ CXX
+ XCVIII
+ XLIX
+ VIII
 
 ```
 
@@ -67,12 +70,17 @@ C
 # Conversion
 
 ```jldoctest
-julia> Int(rn"MMXIX")
+julia> RomanNumeral(2019)
+MMXIX
+
+julia> Int16(rn"MMXIX")
 2019
 
 julia> string(rn"MMXIX")
 "MMXIX"
 
+julia> rn"I" == RomanNumeral("I") == RomanNumeral('I') == RomanNumeral(1)
+true
 ```
 """
 struct RomanNumeral{T<:Integer}

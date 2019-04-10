@@ -183,9 +183,13 @@ end
 
 Base.show(io::IO, rn::RomanNumeral) = print(io, convert(String, rn))
 
-function Random.rand(rng::AbstractRNG, ::Random.SamplerType{RomanNumeral})
-    RomanNumeral(Int(abs(rand(rng, Int8))))
-end
+# Random numerals
+
+Random.rand(rng::AbstractRNG, ::Random.SamplerType{RomanNumeral{T}}) where T<:Integer =
+    RomanNumeral(T(rand(rng, 1:min(typemax(T), 5000))))
+
+Random.rand(rng::AbstractRNG, ::Random.SamplerType{RomanNumeral}) =
+    RomanNumeral(rand(rng, 1:5000))
 
 # String literal
 

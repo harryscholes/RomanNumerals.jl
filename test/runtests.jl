@@ -102,7 +102,12 @@ end
 end
 
 @testset "Random" begin
-    @test rand(MT(1), RomanNumeral) == rn"LXXXII"
-    @test rand(MT(1), RomanNumeral, 3) == RomanNumeral.(["LXXXII","CXXVI","CIII"])
-    @test rand(MT(2), RomanNumeral, 3) == RomanNumeral.(["CXXVI","XXXIII","XIX"])
+    @test rand(MT(1), RomanNumeral) == rn"MCXCIX"
+    @test rand(MT(1), RomanNumeral, 3) == RomanNumeral.(["MCXCIX", "MCLV", "CCCLX"])
+    @test rand(MT(2), RomanNumeral, 3) ==
+        RomanNumeral.(["DCCCXCV", "DCCXXXVI", "MDCCXXXVIII"])
+    @test rand(RomanNumeral) isa RomanNumeral{Int}
+    for T = [Int8, Int16, Int32, Int64, Int128]
+        @test rand(RomanNumeral{T}) isa RomanNumeral{T}
+    end
 end

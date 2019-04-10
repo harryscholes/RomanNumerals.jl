@@ -5,7 +5,12 @@ export
     @rn_str,
     I, V, X, L, C, D, M
 
-import Base: +, -, *, ÷
+import Base:
+    +, -, *, ÷,
+    Int8, Int16, Int32, Int64, Int128, BigInt,
+    UInt8, UInt16, UInt32, UInt64, UInt128
+
+using Random
 
 """
     RomanNumeral(num)
@@ -80,6 +85,7 @@ struct RomanNumeral{T<:Integer}
 end
 
 RomanNumeral(rn::AbstractString) = convert(RomanNumeral, rn)
+RomanNumeral(rn::AbstractChar) = convert(RomanNumeral, string(rn))
 
 # I, V, X, L, C, D and M consts
 
@@ -161,8 +167,17 @@ end
 Base.convert(::Type{String}, rn::RomanNumeral) = parse(String, rn)
 Base.convert(::Type{RomanNumeral}, rn::String) = parse(RomanNumeral, rn)
 Base.convert(::Type{T}, rn::RomanNumeral) where T<:Integer = T(rn.num)
-Base.Int(rn::RomanNumeral) = convert(Int, rn)
+
+for T = [:Int8, :Int16, :Int32, :Int64, :Int128, :BigInt,
+         :UInt8, :UInt16, :UInt32, :UInt64, :UInt128]
+    @eval $T(rn::RomanNumeral) = convert($T, rn)
+end
+
 Base.show(io::IO, rn::RomanNumeral) = print(io, convert(String, rn))
+
+function Random.rand(rng::AbstractRNG, ::Random.SamplerType{RomanNumeral})
+    RomanNumeral(abs(rand(rng, Int8)))
+end
 
 # String literal
 

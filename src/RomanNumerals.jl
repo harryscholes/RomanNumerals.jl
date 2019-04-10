@@ -184,7 +184,7 @@ end
 Base.show(io::IO, rn::RomanNumeral) = print(io, convert(String, rn))
 
 function Random.rand(rng::AbstractRNG, ::Random.SamplerType{RomanNumeral})
-    RomanNumeral(abs(rand(rng, Int8)))
+    RomanNumeral(Int(abs(rand(rng, Int8))))
 end
 
 # String literal

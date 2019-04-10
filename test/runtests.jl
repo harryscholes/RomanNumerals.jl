@@ -1,5 +1,8 @@
 using RomanNumerals
 using Test
+using Random
+
+const MT = MersenneTwister
 
 using RomanNumerals: InvalidRomanNumeral
 
@@ -50,12 +53,12 @@ end
 @testset "Conversion" begin
     @testset "Integer" begin
         @test Int(rn"I") == 1
-        @test Int(rn"V") == 5
-        @test Int(rn"X") == 10
-        @test Int(rn"L") == 50
-        @test Int(rn"C") == 100
-        @test Int(rn"D") == 500
-        @test Int(rn"M") == 1000
+        @test Int8(rn"V") == 5
+        @test Int16(rn"X") == 10
+        @test Int32(rn"L") == 50
+        @test Int64(rn"C") == 100
+        @test Int16(rn"D") == 500
+        @test Int32(rn"M") == 1000
     end
     @testset "String" begin
         @test string(rn"I") == "I"
@@ -94,4 +97,10 @@ end
         @test D - 2C == RomanNumeral(300)
         @test M + M + M + M == RomanNumeral(4000)
     end
+end
+
+@testset "Random" begin
+    @test rand(MT(1), RomanNumeral) == rn"LXXXII"
+    @test rand(MT(1), RomanNumeral, 3) == RomanNumeral.(["LXXXII","CXXVI","CIII"])
+    @test rand(MT(2), RomanNumeral, 3) == RomanNumeral.(["CXXVI","XXXIII","XIX"])
 end

@@ -135,7 +135,8 @@ const INT_NUMERAL = Dict(
     400  => "CD",
     500  => "D",
     900  => "CM",
-    1000 => "M")
+    1000 => "M",
+)
 
 const NUMERAL_INT = Dict(zip(values(INT_NUMERAL), keys(INT_NUMERAL)))
 
@@ -146,7 +147,7 @@ function isvalidromannumeral(rn::AbstractString)
     m = match(ROMAN_NUMERAL_REGEX, rn)
     isnothing(m) && throw(InvalidRomanNumeral())
     length(m.match) != length(rn) && throw(InvalidRomanNumeral())
-    true
+    return true
 end
 
 function Base.parse(::Type{String}, rn::RomanNumeral)
@@ -156,7 +157,7 @@ function Base.parse(::Type{String}, rn::RomanNumeral)
         s *= repeat(INT_NUMERAL[y], x ÷ y)
         x %= y
     end
-    s
+    return s
 end
 
 function Base.parse(::Type{RomanNumeral}, rn::String)
@@ -169,7 +170,7 @@ function Base.parse(::Type{RomanNumeral}, rn::String)
         curr = next
     end
     x += curr
-    RomanNumeral(x)
+    return RomanNumeral(x)
 end
 
 Base.convert(::Type{String}, rn::RomanNumeral) = parse(String, rn)

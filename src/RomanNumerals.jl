@@ -7,10 +7,13 @@ export
 
 import Base:
     +, -, *, ÷,
-    Int8, Int16, Int32, Int64, Int128, BigInt,
+    Int8, Int16, Int32, Int64, Int128,
+    BigInt,
     UInt8, UInt16, UInt32, UInt64, UInt128
 
 using Random
+
+const MAXIMUM_ROMAN_NUMERAL = 5000
 
 """
     RomanNumeral(num)
@@ -86,18 +89,27 @@ true
 struct RomanNumeral{T<:Integer}
     num::T
 
-    function RomanNumeral(num::T) where T<:Integer
-        num ≤ 0 && throw(DomainError("Roman numerals must be positive"))
+    function RomanNumeral{T}(num::T) where T<:Integer
+        num ≤ 0 && throw(DomainError(num, "Roman numerals must be positive"))
         new{T}(num)
     end
 end
 
-RomanNumeral(rn::AbstractString) = convert(RomanNumeral, rn)
-RomanNumeral(rn::AbstractChar) = convert(RomanNumeral, string(rn))
+RomanNumeral(num::T) where T<:Integer = RomanNumeral{T}(num)
+RomanNumeral(rn::AbstractString) = parse(RomanNumeral, rn)
+RomanNumeral(rn::AbstractChar) = parse(RomanNumeral, string(rn))
 
 # I, V, X, L, C, D and M consts
 
-for (rn,v) = [(:I,1), (:V,5), (:X,10), (:L,50), (:C,100), (:D,500), (:M,1000)]
+for (rn, v) in (
+    (:I,    1),
+    (:V,    5),
+    (:X,   10),
+    (:L,   50),
+    (:C,  100),
+    (:D,  500),
+    (:M, 1000),
+)
     @eval begin
         """
             $($rn)
@@ -108,11 +120,16 @@ for (rn,v) = [(:I,1), (:V,5), (:X,10), (:L,50), (:C,100), (:D,500), (:M,1000)]
     end
 end
 
-const RomanNumeralChars = ['I', 'V', 'X', 'L', 'C', 'D', 'M']
+const ROMAN_NUMERAL_CHARS = ('I', 'V', 'X', 'L', 'C', 'D', 'M')
 
 # Arithmetic
 
-for op = [:+, :-, :*, :÷]
+for op in (
+    :+,
+    :-,
+    :*,
+    :÷,
+)
     @eval begin
         ($op)(x::RomanNumeral, y::RomanNumeral) = RomanNumeral(($op)(x.num, y.num))
         ($op)(x::RomanNumeral, y::Integer) = RomanNumeral(($op)(x.num, y))
@@ -123,27 +140,32 @@ end
 # Parsing
 
 const INT_NUMERAL = Dict(
-    1    => "I",
-    4    => "IV",
-    5    => "V",
-    9    => "IX",
-    10   => "X",
-    40   => "XL",
-    50   => "L",
-    90   => "XC",
-    100  => "C",
-    400  => "CD",
-    500  => "D",
-    900  => "CM",
+       1 => "I",
+       4 => "IV",
+       5 => "V",
+       9 => "IX",
+      10 => "X",
+      40 => "XL",
+      50 => "L",
+      90 => "XC",
+     100 => "C",
+     400 => "CD",
+     500 => "D",
+     900 => "CM",
     1000 => "M",
 )
 
-const NUMERAL_INT = Dict(zip(values(INT_NUMERAL), keys(INT_NUMERAL)))
+const NUMERAL_INT = Dict(
+    zip(
+        values(INT_NUMERAL),
+        keys(INT_NUMERAL),
+    )
+)
 
 const ROMAN_NUMERAL_REGEX =
     r"(M*(CM|CD|DC{0,4}|C{0,9})(XC|XL|LX{0,4}|X{0,9})(IX|IV|VI{0,4}|I{0,9}))"x
 
-function isvalidromannumeral(rn::AbstractString)
+function is_valid_roman_numeral(rn::AbstractString)
     m = match(ROMAN_NUMERAL_REGEX, rn)
     isnothing(m) && throw(InvalidRomanNumeral())
     length(m.match) != length(rn) && throw(InvalidRomanNumeral())
@@ -153,7 +175,7 @@ end
 function Base.parse(::Type{String}, rn::RomanNumeral)
     x = rn.num
     s = ""
-    for y = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1]
+    for y in (1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
         s *= repeat(INT_NUMERAL[y], x ÷ y)
         x %= y
     end
@@ -161,12 +183,17 @@ function Base.parse(::Type{String}, rn::RomanNumeral)
 end
 
 function Base.parse(::Type{RomanNumeral}, rn::String)
-    isvalidromannumeral(rn)
+    is_valid_roman_numeral(rn)
+    f = i -> NUMERAL_INT[string(rn[i])]
     x = 0
-    curr = NUMERAL_INT[string(rn[1])]
-    for i = 1:length(rn)-1
-        next = NUMERAL_INT[string(rn[i+1])]
-        curr < next ? (x -= curr) : (x += curr)
+    curr = f(1)
+    for i = 1:length(rn) - 1
+        next = f(i + 1)
+        if curr < next
+            x -= curr
+        else
+            x += curr
+        end
         curr = next
     end
     x += curr
@@ -175,10 +202,13 @@ end
 
 Base.convert(::Type{String}, rn::RomanNumeral) = parse(String, rn)
 Base.convert(::Type{RomanNumeral}, rn::String) = parse(RomanNumeral, rn)
-Base.convert(::Type{T}, rn::RomanNumeral) where T<:Integer = T(rn.num)
+Base.convert(::Type{T}, rn::RomanNumeral) where T<:Integer = convert(T, rn.num)
 
-for T = [:Int8, :Int16, :Int32, :Int64, :Int128, :BigInt,
-         :UInt8, :UInt16, :UInt32, :UInt64, :UInt128]
+for T in (
+    :Int8, :Int16, :Int32, :Int64, :Int128,
+    :BigInt,
+    :UInt8, :UInt16, :UInt32, :UInt64, :UInt128,
+)
     @eval $T(rn::RomanNumeral) = convert($T, rn)
 end
 
@@ -186,11 +216,16 @@ Base.show(io::IO, rn::RomanNumeral) = print(io, convert(String, rn))
 
 # Random numerals
 
-Random.rand(rng::AbstractRNG, ::Random.SamplerType{RomanNumeral{T}}) where T<:Integer =
-    RomanNumeral(T(rand(rng, 1:min(typemax(T), 5000))))
+function Random.rand(rng::AbstractRNG, ::Random.SamplerType{RomanNumeral{T}}) where T<:Integer
+    max_num = min(typemax(T), MAXIMUM_ROMAN_NUMERAL)
+    num = rand(rng, 1:max_num)
+    return RomanNumeral(T(num))
+end
 
-Random.rand(rng::AbstractRNG, ::Random.SamplerType{RomanNumeral}) =
-    RomanNumeral(rand(rng, 1:5000))
+function Random.rand(rng::AbstractRNG, ::Random.SamplerType{RomanNumeral})
+    num = rand(rng, 1:MAXIMUM_ROMAN_NUMERAL)
+    return RomanNumeral(num)
+end
 
 # String literal
 
